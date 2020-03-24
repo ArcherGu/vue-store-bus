@@ -1,0 +1,50 @@
+{
+    "name": "vue-store-bus",
+    "version": "1.0.0",
+    "description": "A event bus with store for Vue.js",
+    "main": "dist/vue-store-bus.common.js",
+    "module": "dist/vue-store-bus.esm.js",
+    "unpkg": "dist/vue-store-bus.js",
+    "jsdelivr": "dist/vue-store-bus.js",
+    "files": [
+        "src",
+        "dist/*.js"
+    ],
+    "scripts": {
+        "lint": "eslint src __tests__",
+        "build": "rimraf dist && rollup -c && uglifyjs dist/vue-store-bus.js -c -m --comments -o dist/vue-store-bus.min.js",
+        "test": "jest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ArcherGu/vue-store-bus.git"
+    },
+    "keywords": [
+        "vue",
+        "events",
+        "bus",
+        "store",
+        "vue-store-bus"
+    ],
+    "author": "ArcherGu",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/ArcherGu/vue-store-bus/issues"
+    },
+    "homepage": "https://github.com/ArcherGu/vue-store-bus",
+    "devDependencies": {
+        "buble": "^0.19.8",
+        "eslint": "^6.8.0",
+        "eslint-config-standard": "^14.1.1",
+        "eslint-plugin-import": "^2.20.1",
+        "eslint-plugin-node": "^11.0.0",
+        "eslint-plugin-promise": "^4.2.1",
+        "eslint-plugin-standard": "^4.0.1",
+        "jest": "^25.1.0",
+        "rimraf": "^3.0.2",
+        "rollup": "^2.1.0",
+        "rollup-plugin-buble": "^0.19.8",
+        "uglify-js": "^3.8.0",
+        "vue": "^2.6.11"
+    }
+}
