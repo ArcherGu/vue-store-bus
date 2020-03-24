@@ -1,10 +1,10 @@
 /*!
  * vue-store-bus v1.0.0
- * https://github.com/yangmingshan/vue-bus
+ * https://github.com/ArcherGu/vue-store-bus.git
  * @license MIT
  */
 function VueStoreBus(Vue, router) {
-    //Bus & Stroe
+    // Bus & Stroe
     var mixin = {
         watch: {
             $route: function $route(to, from) {
@@ -14,7 +14,7 @@ function VueStoreBus(Vue, router) {
                     this.currentStore.route = undefined;
                 }
             }
-        },
+        }
     };
 
     var bus = new Vue({
@@ -44,19 +44,17 @@ function VueStoreBus(Vue, router) {
 
             getNameSpaceVal: function getNameSpaceVal(namespace) {
                 if (this.busStore[namespace] === undefined) {
-                    console.error('不存在的命名空间！');
-                    return undefined;
-                }
-                else {
-                    return this.busStore[namespace];
+                    console.error('Non-existing namespace!');
+                } else {
+                    return this.busStore[namespace]
                 }
             },
 
             setVal: function setVal(propertyName, val) {
-                var nameArr = propertyName.split("/");
+                var nameArr = propertyName.split('/');
                 if (nameArr && nameArr.lenght < 2) {
-                    console.error('你必须指定一个命名空间！');
-                    return false;
+                    console.error('You have to add a namespace!');
+                    return
                 }
                 if (this.busStore[nameArr[0]] === undefined) {
                     this.createNameSpace(nameArr[0]);
@@ -64,8 +62,7 @@ function VueStoreBus(Vue, router) {
 
                 if (this.busStore[nameArr[0]][nameArr[1]] === undefined) {
                     this.$set(this.busStore[nameArr[0]], nameArr[1], val);
-                }
-                else {
+                } else {
                     this.busStore[nameArr[0]][nameArr[1]] = val;
                 }
             },
@@ -73,40 +70,40 @@ function VueStoreBus(Vue, router) {
             getVal: function getVal(propertyName, defVal) {
                 if ( defVal === void 0 ) defVal = undefined;
 
-                var nameArr = propertyName.split("/");
+                var nameArr = propertyName.split('/');
                 if (nameArr && nameArr.lenght < 2) {
-                    console.error('你必须指定一个命名空间！');
-                    return false;
+                    console.error('You must specify a namespace!');
+                    return
                 }
 
                 if (this.busStore[nameArr[0]] === undefined || this.busStore[nameArr[0]][nameArr[1]] === undefined) {
-                    return defVal;
+                    return defVal
                 }
-                return this.busStore[nameArr[0]][nameArr[1]];
+                return this.busStore[nameArr[0]][nameArr[1]]
             },
 
             delVal: function delVal(propertyName) {
-                var nameArr = propertyName.split("/");
+                var nameArr = propertyName.split('/');
                 if (nameArr && nameArr.lenght < 2) {
-                    console.error('你必须指定一个命名空间！');
-                    return false;
+                    console.error('You must specify a namespace!');
+                    return
                 }
 
                 if (this.busStore[nameArr[0]] === undefined) {
-                    console.error('不存在的命名空间！');
-                    return false;
+                    console.error('Non-existing namespace!');
+                    return
                 }
 
                 this.$delete(this.busStore[nameArr[0]], nameArr[1]);
             },
 
             getStore: function getStore() {
-                return this.busStore;
-            },
+                return this.busStore
+            }
         }
     });
 
-    //Events
+    // Events
     Object.defineProperties(bus, {
         on: {
             get: function get() {
