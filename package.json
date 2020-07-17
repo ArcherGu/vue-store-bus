@@ -1,6 +1,6 @@
 {
     "name": "vue-store-bus",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "A event bus with store for Vue.js",
     "main": "dist/vue-store-bus.common.js",
     "module": "dist/vue-store-bus.esm.js",

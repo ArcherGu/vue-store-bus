@@ -1,5 +1,5 @@
 /*!
- * vue-store-bus v1.0.0
+ * vue-store-bus v1.1.0
  * https://github.com/ArcherGu/vue-store-bus.git
  * @license MIT
  */
@@ -22,6 +22,7 @@ function VueStoreBus(Vue, router) {
         mixins: typeof router === 'object' ? [mixin] : [],
         data: {
             busStore: {},
+            callbackStore: {},
             currentStore: {
                 namespace: undefined,
                 route: undefined
@@ -36,27 +37,42 @@ function VueStoreBus(Vue, router) {
                         this.currentStore.route = this.$route.path;
                     }
                 }
+
+                if (this.callbackStore[namespace] === undefined) {
+                    this.$set(this.callbackStore, namespace, {});
+                }
             },
 
             destroyNameSpace: function destroyNameSpace(namespace) {
+                if (typeof this.callbackStore[namespace] === 'object') {
+                    for (var valName in this.callbackStore[namespace]) {
+                        if (typeof this.callbackStore[namespace][valName] === 'function') {
+                            this.callbackStore[namespace][valName]();
+                        }
+                    }
+                }
+
                 this.$delete(this.busStore, namespace);
+                this.$delete(this.callbackStore, namespace);
             },
 
             getNameSpaceVal: function getNameSpaceVal(namespace) {
                 if (this.busStore[namespace] === undefined) {
                     console.error('Non-existing namespace!');
                 } else {
-                    return this.busStore[namespace]
+                    return this.busStore[namespace];
                 }
             },
 
-            setVal: function setVal(propertyName, val) {
+            setVal: function setVal(propertyName, val, destroyCallback) {
+                if ( destroyCallback === void 0 ) destroyCallback = function (_) { };
+
                 var nameArr = propertyName.split('/');
                 if (nameArr && nameArr.lenght < 2) {
                     console.error('You have to add a namespace!');
-                    return
+                    return;
                 }
-                if (this.busStore[nameArr[0]] === undefined) {
+                if (this.busStore[nameArr[0]] === undefined || this.callbackStore[nameArr[0]] === undefined) {
                     this.createNameSpace(nameArr[0]);
                 }
 
@@ -64,6 +80,16 @@ function VueStoreBus(Vue, router) {
                     this.$set(this.busStore[nameArr[0]], nameArr[1], val);
                 } else {
                     this.busStore[nameArr[0]][nameArr[1]] = val;
+                }
+
+                if (typeof destroyCallback !== 'function') {
+                    destroyCallback = function (_) { };
+                }
+
+                if (this.callbackStore[nameArr[0]][nameArr[1]] === undefined) {
+                    this.$set(this.callbackStore[nameArr[0]], nameArr[1], destroyCallback);
+                } else {
+                    this.callbackStore[nameArr[0]][nameArr[1]] = destroyCallback;
                 }
             },
 
@@ -73,32 +99,44 @@ function VueStoreBus(Vue, router) {
                 var nameArr = propertyName.split('/');
                 if (nameArr && nameArr.lenght < 2) {
                     console.error('You must specify a namespace!');
-                    return
+                    return;
                 }
 
                 if (this.busStore[nameArr[0]] === undefined || this.busStore[nameArr[0]][nameArr[1]] === undefined) {
-                    return defVal
+                    return defVal;
                 }
-                return this.busStore[nameArr[0]][nameArr[1]]
+                return this.busStore[nameArr[0]][nameArr[1]];
             },
 
             delVal: function delVal(propertyName) {
                 var nameArr = propertyName.split('/');
                 if (nameArr && nameArr.lenght < 2) {
                     console.error('You must specify a namespace!');
-                    return
+                    return;
                 }
 
                 if (this.busStore[nameArr[0]] === undefined) {
                     console.error('Non-existing namespace!');
-                    return
+                    return;
+                }
+
+                if (
+                    typeof this.callbackStore[nameArr[0]] === 'object' &&
+                    typeof this.callbackStore[nameArr[0]][nameArr[1]] === 'function'
+                ) {
+                    this.callbackStore[nameArr[0]][nameArr[1]]();
                 }
 
                 this.$delete(this.busStore[nameArr[0]], nameArr[1]);
+                this.$delete(this.callbackStore[nameArr[0]], nameArr[1]);
             },
 
             getStore: function getStore() {
-                return this.busStore
+                return this.busStore;
+            },
+
+            getCurrentStore: function getCurrentStore() {
+                return this.currentStore;
             }
         }
     });
@@ -107,35 +145,35 @@ function VueStoreBus(Vue, router) {
     Object.defineProperties(bus, {
         on: {
             get: function get() {
-                return this.$on.bind(this)
+                return this.$on.bind(this);
             }
         },
         once: {
             get: function get() {
-                return this.$once.bind(this)
+                return this.$once.bind(this);
             }
         },
         off: {
             get: function get() {
-                return this.$off.bind(this)
+                return this.$off.bind(this);
             }
         },
         emit: {
             get: function get() {
-                return this.$emit.bind(this)
+                return this.$emit.bind(this);
             }
         }
     });
 
     Object.defineProperty(Vue, 'bus', {
         get: function get() {
-            return bus
+            return bus;
         }
     });
 
     Object.defineProperty(Vue.prototype, '$bus', {
         get: function get() {
-            return bus
+            return bus;
         }
     });
 }
