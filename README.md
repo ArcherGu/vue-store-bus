@@ -79,14 +79,15 @@ methods: {
 ```
 
 Since version 1.1.0, you can also set a callback function, This function will be called before this value is destroyed.
-For example, if you store a class in the store and want to trigger its destructor when the class is destroyed
+For example, if you store a class in the store and want to trigger its destructor when the class is destroyed.
+**Note: Due to scope, you may need closure or bind callback to this.**
 
 ```js
 // ...
 methods: {
   setClassToStore() {
     // e.g myClass
-    this.$bus.setVal('myNamespace/myClass', myClass, myClass.destroy)
+    this.$bus.setVal('myNamespace/myClass', myClass, _ => { myClass.destroy() })
   }
 },
 ```
