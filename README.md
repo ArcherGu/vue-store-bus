@@ -1,4 +1,6 @@
 # vue-store-bus
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FArcherGu%2Fvue-store-bus.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FArcherGu%2Fvue-store-bus?ref=badge_shield)
+
 
 A event bus with store for Vue.js, support Vue 2.x.
 
@@ -108,3 +110,6 @@ _Note: You can set a default value if the specified value cannot be obtained._
 ## License
 
 [MIT](https://opensource.org/licenses/MIT)
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FArcherGu%2Fvue-store-bus.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FArcherGu%2Fvue-store-bus?ref=badge_large)
