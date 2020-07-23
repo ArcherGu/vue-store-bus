@@ -1,47 +1,60 @@
 /* global test expect */
-const Vue = require('vue')
-const VueStoreBus = require('../dist/vue-store-bus.common')
+const Vue = require('vue');
+const VueStoreBus = require('../dist/vue-store-bus.common');
 
-Vue.use(VueStoreBus)
+Vue.use(VueStoreBus);
 
 test('Vue.bus', () => {
     const vm = new Vue({
         data() {
-            return { count: 0 }
+            return {
+                count: 0,
+            };
         },
         created() {
-            Vue.bus.on('add', num => { this.count += num })
-            Vue.bus.once('addOnce', num => { this.count += num })
+            Vue.bus.on('add', num => { this.count += num; });
+            Vue.bus.once('addOnce', num => { this.count += num; });
+            Vue.bus.setVal('test/testObj', this.testObj);
         },
         methods: {
             clean() {
-                Vue.bus.off('add')
+                Vue.bus.off('add');
+            },
+
+            getValue() {
+                return Vue.bus.getVal('test/storeValue');
             }
         }
-    })
+    });
 
     const obj = {
         fire() {
-            Vue.bus.emit('add', 1)
+            Vue.bus.emit('add', 1);
         },
         fireOnce() {
-            Vue.bus.emit('addOnce', 1)
+            Vue.bus.emit('addOnce', 1);
+        },
+        setValue() {
+            Vue.bus.setVal('test/storeValue', 1);
         }
-    }
+    };
 
-    obj.fire()
-    expect(vm.count).toBe(1)
+    obj.fire();
+    expect(vm.count).toBe(1);
 
-    obj.fire()
-    expect(vm.count).toBe(2)
+    obj.fire();
+    expect(vm.count).toBe(2);
 
-    vm.clean()
-    obj.fire()
-    expect(vm.count).toBe(2)
+    vm.clean();
+    obj.fire();
+    expect(vm.count).toBe(2);
 
-    obj.fireOnce()
-    expect(vm.count).toBe(3)
+    obj.fireOnce();
+    expect(vm.count).toBe(3);
 
-    obj.fireOnce()
-    expect(vm.count).toBe(3)
-})
+    obj.fireOnce();
+    expect(vm.count).toBe(3);
+
+    obj.setValue();
+    expect(vm.getValue()).toBe(1);
+});
