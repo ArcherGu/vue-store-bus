@@ -9,13 +9,16 @@ test('Vue.bus', () => {
         data() {
             return {
                 count: 0,
+                isDestroy: false
             };
         },
         created() {
             Vue.bus.on('add', num => { this.count += num; });
             Vue.bus.once('addOnce', num => { this.count += num; });
             Vue.bus.setVal('test/testObj', this.testObj);
+            Vue.bus.setVal('test/myValue', 1, _ => this.isDestroy = true);
         },
+
         methods: {
             clean() {
                 Vue.bus.off('add');
@@ -36,6 +39,9 @@ test('Vue.bus', () => {
         },
         setValue() {
             Vue.bus.setVal('test/storeValue', 1);
+        },
+        delValue() {
+            Vue.bus.delVal('test/myValue');
         }
     };
 
@@ -57,4 +63,7 @@ test('Vue.bus', () => {
 
     obj.setValue();
     expect(vm.getValue()).toBe(1);
+
+    obj.delValue();
+    expect(vm.isDestroy).toBe(true);
 });
